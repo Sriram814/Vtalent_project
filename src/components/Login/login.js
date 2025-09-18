@@ -1,115 +1,200 @@
-import { Component } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-import './login.css'
+import { Component } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import "./login.css";
 
 class Login extends Component {
   state = {
-    username: '',
-    password: '',
+    email: "",
+    password: "",
+    adminId: "",
+    userType: "student", // default
     showSubmitError: false,
-    errorMsg: '',
+    errorMsg: "",
+    users: [
+      { email: "student1@gmail.com", password: "pass123", userType: "student" },
+      { email: "student2@gmail.com", password: "pass234", userType: "student" },
+      {
+        email: "prasad@gmail.com",
+        password: "prasad1234",
+        adminId: "ADM001",
+        userType: "admin",
+      },
+      {
+        email: "ramireddy@gmail.com",
+        password: "ramireddy@1234",
+        adminId: "ADM002",
+        userType: "admin",
+      },
+    ],
+  };
+
+  componentDidMount() {
+    // ✅ Load users from localStorage (merge with defaults)
+    const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+    this.setState((prevState) => ({
+      users: [...prevState.users, ...storedUsers],
+    }));
   }
 
-  onChangeUsername = event => {
-    this.setState({ username: event.target.value })
-  }
+  onChangeEmail = (event) => {
+    this.setState({ email: event.target.value });
+  };
 
-  onChangePassword = event => {
-    this.setState({ password: event.target.value })
-  }
+  onChangePassword = (event) => {
+    this.setState({ password: event.target.value });
+  };
 
-  submitForm = event => {
-    event.preventDefault()
-    const { username, password } = this.state
-    const { navigate } = this.props
+  onChangeAdminId = (event) => {
+    this.setState({ adminId: event.target.value });
+  };
 
-    if (username === '' || password === '') {
+  handleUserTypeClick = (type) => {
+    this.setState({ userType: type, showSubmitError: false });
+  };
+
+  submitForm = (event) => {
+    event.preventDefault();
+    const { email, password, adminId, userType, users } = this.state;
+
+    if (email === "" || password === "" || (userType === "admin" && adminId === "")) {
       this.setState({
         showSubmitError: true,
-        errorMsg: 'Please enter both fields',
-      })
-      return
+        errorMsg: "⚠️ Please fill all required fields",
+      });
+      return;
     }
 
-    // 🔹 Check for Admin credentials
-    if (username === 'Prasad' && password === 'Prasad@123') {
-      navigate('/admin')
+    const matchedUser = users.find(
+      (user) =>
+        user.email === email &&
+        user.password === password &&
+        user.userType === userType &&
+        (userType === "student" || (userType === "admin" && user.adminId === adminId))
+    );
+
+    if (matchedUser) {
+      if (userType === "admin") {
+        this.props.navigate("/admin");
+      } else {
+        this.props.navigate("/student");
+      }
     } else {
-      // 🔹 Normal users → go to student page
-      navigate('/student')
+      this.setState({
+        showSubmitError: true,
+        errorMsg: "Invalid credentials",
+      });
     }
-  }
+  };
 
-  renderPasswordField = () => {
-    const { password } = this.state
-    return (
-      <>
-        <label className="input-label" htmlFor="password">
-          PASSWORD
-        </label>
-        <input
-          type="password"
-          id="password"
-          className="password-input-field"
-          value={password}
-          onChange={this.onChangePassword}
-          placeholder="Password"
-        />
-      </>
-    )
-  }
+  renderPasswordField = () => (
+    <>
+      <label className="input-label" htmlFor="password">
+        PASSWORD
+      </label>
+      <input
+        type="password"
+        id="password"
+        className="password-input-field"
+        value={this.state.password}
+        onChange={this.onChangePassword}
+        placeholder="Enter Password"
+      />
+    </>
+  );
 
-  renderUsernameField = () => {
-    const { username } = this.state
-    return (
-      <>
-        <label className="input-label" htmlFor="username">
-          USERNAME
-        </label>
-        <input
-          type="text"
-          id="username"
-          className="username-input-field"
-          value={username}
-          onChange={this.onChangeUsername}
-          placeholder="Username"
-        />
-      </>
-    )
-  }
+  renderEmailField = () => (
+    <>
+      <label className="input-label" htmlFor="email">
+        EMAIL
+      </label>
+      <input
+        type="email"
+        id="email"
+        className="username-input-field"
+        value={this.state.email}
+        onChange={this.onChangeEmail}
+        placeholder="Enter Email"
+      />
+    </>
+  );
+
+  renderAdminIdField = () => (
+    <>
+      <label className="input-label" htmlFor="adminId">
+        ADMIN ID
+      </label>
+      <input
+        type="text"
+        id="adminId"
+        className="username-input-field"
+        value={this.state.adminId}
+        onChange={this.onChangeAdminId}
+        placeholder="Enter Admin ID"
+      />
+    </>
+  );
 
   render() {
-    const { showSubmitError, errorMsg } = this.state
+    const { showSubmitError, errorMsg, userType } = this.state;
 
     return (
       <div className="login-form-container">
-        <img
-          src="/vtalentlogo.png"
-          className="login-website-logo-mobile-img"
-          alt="website logo"
-        />
-        <img
-          src="/quizimg1.png"
-          className="login-img"
-          alt="website login"
-        />
+        {/* ===== Left: Video ===== */}
+        <div className="video-container">
+          <video
+            className="video"
+            autoPlay
+            loop
+            muted
+            playsInline
+            src="/takequiz2.mp4"
+            type="video/mp4"
+          />
+        </div>
 
+        {/* ===== Right: Form ===== */}
         <form className="form-container" onSubmit={this.submitForm}>
           <img
             src="/vtalentlogo.png"
             className="login-website-logo-desktop-img"
             alt="website logo"
           />
-          <div className="welcome">
-            <h1>Welcome Buddy Please Login</h1>
+
+          {/* ===== Student/Admin Buttons ===== */}
+          <div className="login-type-buttons">
+            <button
+              type="button"
+              className={`login-type-btn ${userType === "student" ? "active" : ""}`}
+              onClick={() => this.handleUserTypeClick("student")}
+            >
+              Student
+            </button>
+            <button
+              type="button"
+              className={`login-type-btn ${userType === "admin" ? "active" : ""}`}
+              onClick={() => this.handleUserTypeClick("admin")}
+            >
+              Admin
+            </button>
           </div>
 
-          <div className="input-container">{this.renderUsernameField()}</div>
+          <div className="welcome">
+            <h1>Welcome {userType === "admin" ? "Admin" : "Student"}</h1>
+          </div>
+
+          <div className="input-container">{this.renderEmailField()}</div>
+          {userType === "admin" && (
+            <div className="input-container">{this.renderAdminIdField()}</div>
+          )}
           <div className="input-container">{this.renderPasswordField()}</div>
 
-          {/* Forgot Password + Register Links */}
           <div className="forgot">
-            <p className="forgot-text">Forgot Password?</p>
+            <p
+              className="forgot-text"
+              onClick={() => this.setState({ showForgotPopup: true })}
+            >
+              Forgot Password?
+            </p>
             <Link to="/register" className="register-link">
               Register
             </Link>
@@ -119,19 +204,16 @@ class Login extends Component {
             Login
           </button>
 
-          {showSubmitError && (
-            <p className="error-message">*{errorMsg}</p>
-          )}
+          {showSubmitError && <p className="error-message">*{errorMsg}</p>}
         </form>
       </div>
-    )
+    );
   }
 }
 
-// ✅ wrapper to inject navigate into class component
 function LoginWithNavigate(props) {
-  const navigate = useNavigate()
-  return <Login {...props} navigate={navigate} />
+  const navigate = useNavigate();
+  return <Login {...props} navigate={navigate} />;
 }
 
-export default LoginWithNavigate
+export default LoginWithNavigate;

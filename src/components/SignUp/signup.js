@@ -1,140 +1,178 @@
-import { Component } from "react"
-import { useNavigate } from "react-router-dom"
-import "./signup.css"
+import { Component } from "react";
+import { useNavigate } from "react-router-dom";
+import "./signup.css";
 
 class Signup extends Component {
   state = {
     username: "",
     email: "",
     password: "",
+    adminId: "",
+    userType: "student", // default student
+    errorMsg: "",
+    showSubmitError: false,
     showPopup: false,
-  }
+  };
 
-  onChangeUsername = event => {
-    this.setState({ username: event.target.value })
-  }
+  onChangeUsername = (event) => this.setState({ username: event.target.value });
+  onChangeEmail = (event) => this.setState({ email: event.target.value });
+  onChangePassword = (event) => this.setState({ password: event.target.value });
+  onChangeAdminId = (event) => this.setState({ adminId: event.target.value });
 
-  onChangeEmail = event => {
-    this.setState({ email: event.target.value })
-  }
+  handleUserTypeClick = (type) => {
+    this.setState({ userType: type });
+  };
 
-  onChangePassword = event => {
-    this.setState({ password: event.target.value })
-  }
+  submitForm = (event) => {
+    event.preventDefault();
+    const { username, email, password, adminId, userType } = this.state;
 
-  submitForm = event => {
-    event.preventDefault()
-    const { username, email, password } = this.state
-
-    if (username === "" || email === "" || password === "") {
-      alert("⚠️ Please fill in all fields")
-      return
+    if (
+      username === "" ||
+      email === "" ||
+      password === "" ||
+      (userType === "admin" && adminId === "")
+    ) {
+      this.setState({
+        showSubmitError: true,
+        errorMsg: "⚠️ Please fill in all required fields",
+      });
+      return;
     }
 
-    console.log("✅ New User Registered:", { username, email, password })
+    // ✅ Retrieve old users
+    const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
 
-    // Show popup after successful registration
-    this.setState({ showPopup: true })
-  }
+    // ✅ Create new user
+    const newUser = { username, email, password, userType };
+    if (userType === "admin") {
+      newUser.adminId = adminId;
+    }
 
-  renderUsernameField = () => {
-    const { username } = this.state
-    return (
-      <>
-        <label className="input-label" htmlFor="username">
-          USERNAME
-        </label>
-        <input
-          type="text"
-          id="username"
-          className="username-input-field"
-          value={username}
-          onChange={this.onChangeUsername}
-          placeholder="Enter Username"
-        />
-      </>
-    )
-  }
+    // ✅ Save to localStorage
+    storedUsers.push(newUser);
+    localStorage.setItem("users", JSON.stringify(storedUsers));
 
-  renderEmailField = () => {
-    const { email } = this.state
-    return (
-      <>
-        <label className="input-label" htmlFor="email">
-          EMAIL
-        </label>
-        <input
-          type="email"
-          id="email"
-          className="username-input-field"
-          value={email}
-          onChange={this.onChangeEmail}
-          placeholder="Enter Email"
-        />
-      </>
-    )
-  }
-
-  renderPasswordField = () => {
-    const { password } = this.state
-    return (
-      <>
-        <label className="input-label" htmlFor="password">
-          PASSWORD
-        </label>
-        <input
-          type="password"
-          id="password"
-          className="password-input-field"
-          value={password}
-          onChange={this.onChangePassword}
-          placeholder="Enter Password"
-        />
-      </>
-    )
-  }
+    // ✅ Show success popup
+    this.setState({ showPopup: true, showSubmitError: false });
+  };
 
   render() {
-    const { showPopup } = this.state
-    const { navigate } = this.props
+    const { userType, showSubmitError, errorMsg, showPopup } = this.state;
+    const { navigate } = this.props;
 
     return (
       <div className="login-form-container">
-        {/* Logo for mobile */}
-        <img
-          src="/vtalentlogo.png"
-          className="login-website-logo-mobile-img"
-          alt="website logo"
-        />
+        {/* ===== Left Side Image ===== */}
+        <img src="/welcomeimg1.jpg" className="login-img" alt="signup visual" />
 
-        {/* Side illustration */}
-        <img
-          src="/welcomeimg1.jpg"
-          className="login-img"
-          alt="signup visual"
-        />
-
-        {/* Signup form */}
+        {/* ===== Signup Form ===== */}
         <form className="form-container" onSubmit={this.submitForm}>
           <img
             src="/vtalentlogo.png"
             className="login-website-logo-desktop-img"
             alt="website logo"
           />
+
           <div className="welcome">
             <h1>Create Your Account</h1>
           </div>
 
-          <div className="input-container">{this.renderUsernameField()}</div>
-          <div className="input-container">{this.renderEmailField()}</div>
-          <div className="input-container">{this.renderPasswordField()}</div>
+          {/* ===== Student/Admin Toggle ===== */}
+          <div className="login-type-buttons">
+            <button
+              type="button"
+              className={`login-type-btn ${userType === "student" ? "active" : ""}`}
+              onClick={() => this.handleUserTypeClick("student")}
+            >
+              Student
+            </button>
+            <button
+              type="button"
+              className={`login-type-btn ${userType === "admin" ? "active" : ""}`}
+              onClick={() => this.handleUserTypeClick("admin")}
+            >
+              Admin
+            </button>
+          </div>
 
-          <button type="submit" className="login-button">
-            Create Account
-          </button>
+          {/* ===== Username ===== */}
+          <div className="input-container">
+            <label className="input-label" htmlFor="username">
+              USERNAME
+            </label>
+            <input
+              type="text"
+              id="username"
+              className="username-input-field"
+              onChange={this.onChangeUsername}
+              placeholder="Enter Username"
+            />
+          </div>
+
+          {/* ===== Email ===== */}
+          <div className="input-container">
+            <label className="input-label" htmlFor="email">
+              EMAIL
+            </label>
+            <input
+              type="email"
+              id="email"
+              className="username-input-field"
+              onChange={this.onChangeEmail}
+              placeholder="Enter Email"
+            />
+          </div>
+
+          {/* ===== Admin ID (only if Admin) ===== */}
+          {userType === "admin" && (
+            <div className="input-container">
+              <label className="input-label" htmlFor="adminId">
+                ADMIN ID
+              </label>
+              <input
+                type="text"
+                id="adminId"
+                className="username-input-field"
+                onChange={this.onChangeAdminId}
+                placeholder="Enter Admin ID"
+              />
+            </div>
+          )}
+
+          {/* ===== Password ===== */}
+          <div className="input-container">
+            <label className="input-label" htmlFor="password">
+              PASSWORD
+            </label>
+            <input
+              type="password"
+              id="password"
+              className="password-input-field"
+              onChange={this.onChangePassword}
+              placeholder="Enter Password"
+            />
+          </div>
+
+          {/* ===== Buttons ===== */}
+          <div className="login-type-buttons">
+            <button type="submit" className={`login-type-btn ${userType === "student" ? "active" : ""}`}>
+              Create Account
+            </button>
+            <button
+              type="button"
+              className={`login-type-btn ${userType === "student" ? "active" : ""}`}
+              onClick={() => this.props.navigate("/")}
+            >
+              Back
+            </button>
+          </div>
+
+          {/* ===== Error Message ===== */}
+          {showSubmitError && <p className="error-message">*{errorMsg}</p>}
         </form>
 
-        {/* Popup Message */}
+        {/* ===== Success Popup ===== */}
         {showPopup && (
           <div className="popup-container">
             <div className="popup-box">
@@ -149,14 +187,13 @@ class Signup extends Component {
           </div>
         )}
       </div>
-    )
+    );
   }
 }
 
-// ✅ Wrapper for navigation in class component
 function SignupWithNavigate(props) {
-  const navigate = useNavigate()
-  return <Signup {...props} navigate={navigate} />
+  const navigate = useNavigate();
+  return <Signup {...props} navigate={navigate} />;
 }
 
-export default SignupWithNavigate
+export default SignupWithNavigate;

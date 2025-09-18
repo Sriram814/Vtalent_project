@@ -1,4 +1,5 @@
 import Header from "../Header/header";
+import "./quizes.css";
 function Quize() {
   return (
     <>
