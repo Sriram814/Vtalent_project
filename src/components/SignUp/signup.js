@@ -64,12 +64,22 @@ class Signup extends Component {
     return (
       <div className="login-form-container">
         {/* ===== Left Side Image ===== */}
-        <img src="/welcomeimg1.jpg" className="login-img" alt="signup visual" />
+        <div className="video-container">
+          <video
+            className="video"
+            autoPlay
+            loop
+            muted
+            playsInline
+            src="/signupvid.mp4"
+            type="video/mp4"
+          />
+        </div>
 
         {/* ===== Signup Form ===== */}
         <form className="form-container" onSubmit={this.submitForm}>
           <img
-            src="/vtalentlogo.png"
+            src="/Corpitsoftlogo.png"
             className="login-website-logo-desktop-img"
             alt="website logo"
           />

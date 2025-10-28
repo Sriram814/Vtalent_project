@@ -1,11 +1,375 @@
-
-.heading{
-    margin-top: 50px;
-    color: #333;
-    font-family: "Roboto", sans-serif;
-    font-size: 24px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+/* ================== SIDEBAR ================== */
+.quiz-sidebar {
+  width: 220px;
+  background: #2c3e50;
+  color: white;
+  padding: 20px;
+  position: fixed;
+  top: 60px;          /* leaves space for header */
+  left: 0;
+  bottom: 0;
+  overflow-y: auto;
+  z-index: 1000;
 }
 
+.quiz-sidebar h3 {
+  font-size: 18px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #444;
+  padding-bottom: 5px;
+}
+
+.quiz-sidebar label {
+  display: block;
+  margin: 10px 0 5px;
+}
+
+/* Greeting Card */
+.greet-card {
+  background: #34495e;
+  color: #ecf0f1;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+.greet-card h4 {
+  margin-bottom: 5px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.greet-card p {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+/* Smooth entry animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.logout-btn {
+  background: #e74c3c;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.logout-btn:hover {
+  background: #c0392b;
+}
+
+/* ================== MAIN CONTENT ================== */
+.quiz-main {
+  flex: 1;
+  padding: 20px;
+  margin-left: 250px;
+  margin-top: 0;               /* remove extra white space */
+  background: #f9f9f9;
+  min-height: 100vh;
+  box-sizing: border-box;
+  /* position: relative; */
+  top: 60px;                   /* align perfectly under header */
+}
+.quiz-main h2 {
+  margin-bottom: 20px;
+  color: #2c3e50;
+}
+
+/* Tabs */
+.tabs {
+  margin-bottom: 15px;
+}
+
+.tabs button {
+  padding: 10px 15px;
+  margin-right: 5px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  background: #bdc3c7;
+  color: #2c3e50;
+  font-weight: bold;
+}
+
+.tabs button.active {
+  background: #3498db;
+  color: white;
+}
+
+/* Create Quiz */
+.create-quiz textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: vertical;
+}
+
+.generate-btn {
+  background: #27ae60;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+/* Preview Section */
+.preview-section {
+  margin-top: 20px;
+}
+
+.mcq-card {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.mcq-card h4 {
+  margin-bottom: 10px;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.option-label {
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+.show-answer-btn {
+  background: #f39c12;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.show-answer-btn:hover {
+  background: #e67e22;
+}
+
+.publish-btn {
+  background: #2980b9;
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+.publish-btn:hover {
+  background: #1f5f8a;
+}
+
+/* Selected Answers Preview */
+.selected-answers {
+  margin-top: 20px;
+  background: #ecf0f1;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.selected-answers h4 {
+  margin-bottom: 8px;
+}
+
+/* ================== RESPONSIVE ================== */
+@media (max-width: 768px) {
+  .quiz-sidebar {
+    width: 200px;
+  }
+
+  .quiz-main {
+    margin-left: 200px;
+  }
+}
+
+@media (max-width: 576px) {
+  .quiz-sidebar {
+    position: relative;
+    width: 100%;
+    top: 0;
+    left: 0;
+  }
+
+  .quiz-main {
+    margin-left: 0;
+    margin-top: 10px;
+  }
+}
+
+
+
+/* ✅ Submit button styling */
+.submit-btn {
+  display: block;
+  margin: 30px auto;
+  padding: 12px 40px;
+  background: linear-gradient(135deg, #4caf50, #2e7d32);
+  color: white;
+  font-size: 18px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+
+.submit-btn:hover {
+  background: linear-gradient(135deg, #66bb6a, #388e3c);
+  transform: scale(1.05);
+}
+
+/* ✅ Result box styling */
+.result-box {
+  text-align: center;
+  margin-top: 25px;
+  padding: 20px;
+  border-radius: 15px;
+  background: #f5f5f5;
+  border: 2px solid #4caf50;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.result-box h3 {
+  color: #2e7d32;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+
+/* ✅ Correct and wrong option highlighting */
+.correct-option {
+  background-color: #d4edda;
+  border: 2px solid #28a745;
+  border-radius: 8px;
+  padding: 5px 10px;
+}
+
+.wrong-option {
+  background-color: #f8d7da;
+  border: 2px solid #dc3545;
+  border-radius: 8px;
+  padding: 5px 10px;
+}
+
+.correct-answer-text {
+  color: #155724;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+/* ✅ Submit button (same as before) */
+.submit-btn {
+  display: block;
+  margin: 30px auto;
+  padding: 12px 40px;
+  background: linear-gradient(135deg, #4caf50, #2e7d32);
+  color: white;
+  font-size: 18px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+
+.submit-btn:hover {
+  background: linear-gradient(135deg, #66bb6a, #388e3c);
+  transform: scale(1.05);
+}
+
+/* ✅ Result box (unchanged) */
+.result-box {
+  text-align: center;
+  margin-top: 25px;
+  padding: 20px;
+  border-radius: 15px;
+  background: #f5f5f5;
+  border: 2px solid #4caf50;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.result-box h3 {
+  color: #2e7d32;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.results-section {
+  margin-top: 20px;
+  background: #f9f9f9;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.results-section h2 {
+  color: #2e7d32;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.results-table th,
+.results-table td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+.results-table th {
+  background-color: #4caf50;
+  color: white;
+}
+
+.results-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+
+/* ✅ Scrollable area for Create Quiz MCQs */
+.create-quiz {
+  max-height: calc(100vh - 140px); /* fits nicely within the visible window */
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+/* Optional — make the scrollbar look clean */
+.create-quiz::-webkit-scrollbar {
+  width: 8px;
+}
+
+.create-quiz::-webkit-scrollbar-thumb {
+  background: #ffffff;
+  border-radius: 4px;
+}
+
+.create-quiz::-webkit-scrollbar-thumb:hover {
+  background: #ffffff;
+}
